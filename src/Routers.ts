@@ -2,7 +2,10 @@ import swaggerUi from 'swagger-ui-express'
 import { swaggerSpec } from './swagger.conf'
 import express,{Application, Request, Response} from 'express'
 
-
+import PacienteRouter from './routes/Paciente.Router'
+import MedicoRouter from './routes/Medico.routes'
+import FormularioRoutes from './routes/Formulario.routes'
+import cors from 'cors'
 /**
  * Clase principal de la API, Define las rutas de la API
  * 
@@ -15,6 +18,7 @@ class App {
     public app:Application
     private server:any
 
+
     constructor() {
         this.app=express()
         this.app.use(express.json())
@@ -23,22 +27,16 @@ class App {
             swaggerUi.serve,
             swaggerUi.setup(swaggerSpec)
         )
+        this.app.use(cors())
+
         this.routes()
     }
 
     private routes():void{
-        this.app.get(
-            "/",
-            (req:Request, res:Response)=>{
-                res.send("Bienvenidos a typescript")
-            }
-        )
-        this.app.post(
-            "/paciente",
-            (req:Request, res:Response)=>{
-                res.send("Bienvenidos a typescript")
-            }
-        )
+        this.app.use('/', PacienteRouter)
+        this.app.use('/', MedicoRouter)
+        this.app.use('/', FormularioRoutes)
+
     }
     public start():void{
         this.server=this.app.listen(
